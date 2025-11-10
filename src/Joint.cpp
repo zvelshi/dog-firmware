@@ -32,12 +32,8 @@ void Joint::begin() {
         }
     }
 
-    if (is_calibrated_) {
-        // already calibrated: just set modes and go closed-loop
-        setModes(CTRL_MODE, INPUT_MODE);
-        setAxisState(odrv::IDLE);
-    } else {
-        // not calibrated: send calibration sequence
+    if (!is_calibrated_) {
+        // not calibrated: send full calibration sequence
         calibrate();
     }
 }

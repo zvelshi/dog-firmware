@@ -14,6 +14,7 @@ Leg::Leg(Joint* joints, Kinematics* kin, uint8_t leg_index)
 void Leg::begin() {
     for (uint8_t i = 0; i < DOF_PER_LEG; ++i) {
         joints_[i].begin();
+        joints_[i].setAxisState(odrv::IDLE);
     }
 }
 

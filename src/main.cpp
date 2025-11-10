@@ -42,7 +42,7 @@ void loop() {
             0.3f * sinf(t),
             0.5f * sinf(t),
         };
-        Body::i().setLegPosRef(0, q);   // leg 0
+        Body::i().setLegPosRef(0, q); // leg 0
         // ----------------------------------------
 
         // example: simple ik
