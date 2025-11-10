@@ -19,8 +19,10 @@ constexpr float PRINT_DT_US = PRINT_DT * 1e6f; // [us]
 constexpr float L1 = 0.144f; // [m]
 constexpr float L2 = 0.165f; // [m]
 
+constexpr float GR1 = (18.0f / 56.0f) * (14.0f / 56.0f); // hip/knee speed reduction
+
 constexpr uint32_t AXIS_IDS[NUM_LEGS][DOF_PER_LEG] = {
-    {1, 2}, // LEG 0, joints 0 and 1
+    {1, 2}, // LEG 0
 };
 
 constexpr bool AXIS_CALIBRATION_STATUS[NUM_LEGS][DOF_PER_LEG] = {

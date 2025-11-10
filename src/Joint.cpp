@@ -21,6 +21,7 @@ Joint::Joint(uint32_t axis)
 void Joint::begin() {
     is_calibrated_ = false;
     encoder_offset_ = 0.0f;
+    gear_ratio_ = 1.0f;
 
     // Look up calibration status and encoder offset from config
     for (uint8_t leg = 0; leg < NUM_LEGS; ++leg) {
@@ -28,6 +29,7 @@ void Joint::begin() {
             if (AXIS_IDS[leg][j] == axis_) {
                 is_calibrated_ = AXIS_CALIBRATION_STATUS[leg][j];
                 encoder_offset_ = AXIS_ENCODER_OFFSETS[leg][j];
+                gear_ratio_ = GR1;
             }
         }
     }
@@ -75,7 +77,7 @@ void Joint::setPos(float q, float dq_ff, float tau_ff) {
     //  - bytes 6..7: int16 torque_ff, factor 0.001
     uint8_t data[8] = {0};
 
-    float pos = q - encoder_offset_;
+    float pos = q / gear_ratio_ + encoder_offset_; // convert to encoder frame
     int16_t v_i16 = to_i16_1e3(dq_ff);
     int16_t t_i16 = to_i16_1e3(tau_ff);
 
@@ -100,8 +102,8 @@ void Joint::onCan(const CAN_message_t& msg) {
         float pos, vel;
         memcpy(&pos, &msg.buf[0], sizeof(float));
         memcpy(&vel, &msg.buf[4], sizeof(float));
-        state_.q = pos - encoder_offset_;
-        state_.dq = vel;
+        state_.q = (pos - encoder_offset_)*gear_ratio_; // convert to joint frame
+        state_.dq = vel*gear_ratio_;
     }
 }
 

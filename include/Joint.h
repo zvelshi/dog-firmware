@@ -41,8 +41,9 @@ class Joint {
         }
 
     private:
-        uint32_t   axis_;
+        uint32_t axis_;
         JointState state_;
-        bool       is_calibrated_;
-        float      encoder_offset_;
+        bool is_calibrated_;
+        float encoder_offset_;
+        float gear_ratio_;
 };
