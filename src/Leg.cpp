@@ -30,7 +30,7 @@ void Leg::setMode(LegMode m) {
             joints_[i].setAxisState(odrv::CLOSED_LOOP_CONTROL);
             break;
         case LegMode::POSITION:
-            joints_[i].setModes(CTRL_MODE, odrv::PASSTHROUGH);
+            joints_[i].setModes(odrv::POSITION_CONTROL, odrv::PASSTHROUGH);
             joints_[i].setAxisState(odrv::CLOSED_LOOP_CONTROL);
             break;
         }
