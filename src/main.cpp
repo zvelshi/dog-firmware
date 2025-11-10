@@ -37,12 +37,12 @@ void loop() {
         
         // example: simple sinusoid 
         // ----------------------------------------
-        float t = millis() * 1e-3f;
-        float q[DOF_PER_LEG] = {
-            0.3f * sinf(t),
-            0.5f * sinf(t),
-        };
-        Body::i().setLegPosRef(0, q); // leg 0
+        // float t = millis() * 1e-3f;
+        // float q[DOF_PER_LEG] = {
+        //     0.2f * sinf(t) + 0.5f,
+        //     0.2f * cosf(t) + 0.5f,
+        // };
+        // Body::i().setLegPosRef(0, q); // leg 0
         // ----------------------------------------
 
         // example: simple ik
@@ -72,8 +72,6 @@ void loop() {
             Serial.print(js[i].q, 4);
             Serial.print(" dq=");
             Serial.print(js[i].dq, 4);
-            Serial.print(" tau=");
-            Serial.print(js[i].tau, 4);
         }
 
         // print foot position

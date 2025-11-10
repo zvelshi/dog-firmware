@@ -10,7 +10,7 @@ class Kinematics {
         void fk(const float q[DOF_PER_LEG], float p[3]) const;
 
         // 
-        bool ik(const float p[3], float q[DOF_PER_LEG], elbow_down = true) const;
+        bool ik(const float p[3], float q[DOF_PER_LEG], bool elbow_down) const;
 
     private:
         float l1_;

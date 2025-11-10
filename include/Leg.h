@@ -25,7 +25,7 @@ class Leg {
         // reference setters
         void setPosRef(const float q[DOF_PER_LEG]);
         void setTauRef(const float tau[DOF_PER_LEG]);
-        void setFootPosRef(const float p[3], elbow_down = true);
+        bool setFootPosRef(const float p[3], bool elbow_down);
 
         // state getters
         void getJointState(JointState out[DOF_PER_LEG]) const;

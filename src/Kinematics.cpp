@@ -16,7 +16,7 @@ void Kinematics::fk(const float q[DOF_PER_LEG], float p[3]) const {
 }
 
 // planar 2R arm inverse kinematics, closed form analytical solution
-bool Kinematics::ik(const float p[3], float q[DOF_PER_LEG], bool elbow_down) const {
+bool Kinematics::ik(const float p[3], float q[DOF_PER_LEG], bool elbow_down = true) const {
     // target position
     const float x = p[0];
     const float z = p[2];
