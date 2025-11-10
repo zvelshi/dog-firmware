@@ -5,27 +5,35 @@
 #include "Kinematics.h"
 
 enum class LegMode : uint8_t {
-    IDLE = 0,
-    TORQUE = 1,
-    POS = 2,
+    IDLE     = 0,
+    TORQUE   = 1,
+    POSITION = 2,
 
 };
 
 class Leg {
     public:
-        Leg(Joint* joints, Kinematics* kin);
+        Leg(Joint* joints, Kinematics* kin, uint8_t leg_index);
 
+        // initialization
         void begin();
+        void update(float dt);
 
+        // control mode
         void setMode(LegMode m);
+
+        // reference setters
         void setPosRef(const float q[DOF_PER_LEG]);
         void setTauRef(const float tau[DOF_PER_LEG]);
 
-        void update(float dt);
+        // state getters
+        void getJointState(JointState out[DOF_PER_LEG]) const;
+        void footPos(float p[3]) const;
 
     private:
         Joint* joints_;
         Kinematics* kin_;
+        uint8_t     leg_index_;
 
         LegMode mode_;
 

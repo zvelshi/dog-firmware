@@ -1,9 +1,5 @@
 #include "Bus.h"
-#include "Joint.h"
-#include "Config.h"
-#include "ODriveCAN.h"
-
-extern Joint joints[DOF_PER_LEG];
+#include "Body.h"
 
 Bus& Bus::i() {
     static Bus b;
@@ -18,13 +14,7 @@ void Bus::begin(uint32_t baud) {
 void Bus::poll() {
     CAN_message_t msg;
     while (can_.read(msg)) {
-        uint8_t node_id = odcan::node(static_cast<uint16_t>(msg.id));
-
-        for (uint8_t i = 0; i < DOF_PER_LEG; ++i) {
-            if (joints[i].axis() == node_id) {
-                joints[i].onCan(msg);
-            }
-        }
+        Body::i().onCan(msg);
     }
 }
 

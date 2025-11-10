@@ -96,7 +96,6 @@ void Joint::setPos(float q, float dq_ff, float tau_ff) {
 
 void Joint::onCan(const CAN_message_t& msg) {
     auto c = odcan::cmd(msg.id);
-    // Serial.println("Joint " + String(axis_) + " received CAN cmd: " + String(static_cast<uint16_t>(c)));
 
     // 0x009: Get Encoder Estimates
     //  bytes 0..3: float pos_est

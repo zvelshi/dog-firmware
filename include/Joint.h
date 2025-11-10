@@ -16,16 +16,20 @@ class Joint {
     public:
         explicit Joint(uint32_t axis);
 
+        // initialization and update
         void begin();
         void update();
         void calibrate();
 
+        // command interfaces
         void setTau(float tau);
         void setPos(float q, float dq_ff = 0.0f, float tau_ff = 0.0f);
 
+        // odrive-specific commands
         void setModes(odrv::ControlMode ctrl, odrv::InputMode in);
         void setAxisState(odrv::AxisState state);
 
+        // can message handler
         void onCan(const CAN_message_t& msg);
 
         uint32_t axis() const { 
