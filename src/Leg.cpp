@@ -73,6 +73,15 @@ void Leg::update(float /*dt*/) {
     }
 }
 
+bool Leg::setFootPosRef(const float p[3], bool elbow_down) {
+    float q[DOF_PER_LEG];
+    if (!kin_->ik(p, q, elbow_down)) {
+        return false;
+    }
+    setPosRef(q);
+    return true;
+}
+
 void Leg::getJointState(JointState out[DOF_PER_LEG]) const {
     for (uint8_t i = 0; i < DOF_PER_LEG; ++i) {
         out[i] = joints_[i].state();

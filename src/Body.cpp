@@ -61,6 +61,12 @@ void Body::setLegTauRef(uint8_t leg_idx, const float tau[DOF_PER_LEG]) {
     }
 }
 
+void Body::setLegFootPosRef(uint8_t leg_idx, const float p[3], bool knee_down) {
+    if (leg_idx < NUM_LEGS) {
+        legs_[leg_idx].setFootPosRef(p, knee_down);
+    }
+}
+
 void Body::getLegJointState(uint8_t leg_idx, JointState out[DOF_PER_LEG]) const {
     if (leg_idx < NUM_LEGS) {
         legs_[leg_idx].getJointState(out);

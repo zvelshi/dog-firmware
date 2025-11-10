@@ -45,6 +45,12 @@ void loop() {
         Body::i().setLegPosRef(0, q);   // leg 0
         // ----------------------------------------
 
+        // example: simple ik
+        // ----------------------------------------
+        // float p_des[3] = { 0.0f, 0.0f, -0.15f }; // x, z in meters
+        // Body::i().setLegFootPosRef(0, p_des, true); // leg 0
+        // ----------------------------------------
+
         Body::i().update(dt);
     }
 
