@@ -16,7 +16,7 @@ public:
 
     void setLegPosRef(uint8_t leg_idx, const float q[DOF_PER_LEG]);
     void setLegTauRef(uint8_t leg_idx, const float tau[DOF_PER_LEG]);
-    void setLegFootPosRef(uint8_t leg_idx, const float p[3], bool knee_down);
+    void setLegFootPosRef(uint8_t leg_idx, const float p[3], bool elbow_down);
 
     void getLegJointState(uint8_t leg_idx, JointState out[DOF_PER_LEG]) const;
     void getLegFootPos(uint8_t leg_idx, float p[3]) const;
