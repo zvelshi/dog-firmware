@@ -29,7 +29,10 @@ void Joint::begin() {
             if (AXIS_IDS[leg][j] == axis_) {
                 is_calibrated_ = AXIS_CALIBRATION_STATUS[leg][j];
                 encoder_offset_ = AXIS_ENCODER_OFFSETS[leg][j];
-                gear_ratio_ = GR1;
+
+                if (TEST_MODE == false) {
+                    gear_ratio_ = GR1;
+                }
             }
         }
     }
@@ -59,6 +62,9 @@ void Joint::calibrate(){
 
     // 2) Request FULL_CALIBRATION_SEQUENCE (state = 3)
     setAxisState(odrv::FULL_CALIBRATION_SEQUENCE);
+
+    // 3) Endcoder index search (state = 6)
+    setAxisState(odrv::ENCODER_INDEX_SEARCH);
 }
 
 void Joint::setTau(float tau) {
@@ -77,7 +83,7 @@ void Joint::setPos(float q, float dq_ff, float tau_ff) {
     //  - bytes 6..7: int16 torque_ff, factor 0.001
     uint8_t data[8] = {0};
 
-    float pos = q/(gear_ratio_*2*PI)+encoder_offset_; // convert to encoder frame, to rev
+    float pos = q/(gear_ratio_*2*PI)+encoder_offset_; // convert to motor frame from rad to rev
     int16_t v_i16 = to_i16_1e3(dq_ff);
     int16_t t_i16 = to_i16_1e3(tau_ff);
 

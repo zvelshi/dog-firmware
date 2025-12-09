@@ -28,33 +28,26 @@ void loop() {
     Bus::i().poll();
     uint32_t now_us = micros();
 
-    // control loop - 200 Hz
+    // control loop
     if (now_us - last_ctrl_us >= static_cast<uint32_t>(CTRL_DT_US)) {
-        uint32_t dt_us = now_us - last_ctrl_us;
-        last_ctrl_us   = now_us;
-
-        float dt = dt_us * 1e-6f;
-        
+        last_ctrl_us   = now_us;        
         // example: simple sinusoid 
         // ----------------------------------------
-        // float t = millis() * 1e-3f;
-        // float q[DOF_PER_LEG] = {
-        //     0.2f * sinf(t) + 0.5f,
-        //     0.2f * cosf(t) + 0.5f,
-        // };
-        // Body::i().setLegPosRef(0, q); // leg 0
+        float t = now_us * 1e-6f;
+        float q[DOF_PER_LEG];
+        q[0] = 19.0f / 2.0f * PI * sinf(1.0f * PI * t); // hip
+        // q[1] = 0.4f * sinf(2.0f * PI * 0.2f * t); // knee
+        // Serial.print("q_input: ");
+        // Serial.println(q[0]);
+        // Serial.println(", ");
+        // Serial.println(q[1]);
+        Body::i().setLegPosRef(0, q); // leg 0
         // ----------------------------------------
 
-        // example: simple ik
-        // ----------------------------------------
-        // float p_des[3] = { 0.0f, 0.0f, -0.15f }; // x, z in meters
-        // Body::i().setLegFootPosRef(0, p_des, true); // leg 0
-        // ----------------------------------------
-
-        Body::i().update(dt);
+        Body::i().update();
     }
 
-    // printing - 2 Hz
+    // printing
     if (now_us - last_print_us >= static_cast<uint32_t>(PRINT_DT_US)) {
         last_print_us = now_us;
 
@@ -71,19 +64,19 @@ void loop() {
             Serial.print("] q=");
             Serial.print(js[i].q, 4);
             Serial.print(" dq=");
-            Serial.print(js[i].dq, 4);
+            Serial.println(js[i].dq, 4);
         }
 
         // print foot position
-        float p[3];
-        Body::i().getLegFootPos(0, p);
+        // float p[3];
+        // Body::i().getLegFootPos(0, p);
 
-        Serial.print(" Foot Pos: x=");
-        Serial.print(p[0], 4);
-        Serial.print(" y=");
-        Serial.print(p[1], 4);
-        Serial.print(" z=");
-        Serial.print(p[2], 4);
-        Serial.println();
+        // Serial.print(" Foot Pos: x=");
+        // Serial.print(p[0], 4);
+        // Serial.print(" y=");
+        // Serial.print(p[1], 4);
+        // Serial.print(" z=");
+        // Serial.print(p[2], 4);
+        // Serial.println();
     }
 }

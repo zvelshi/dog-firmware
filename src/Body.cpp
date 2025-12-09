@@ -5,7 +5,8 @@
 #include "ODriveCAN.h"
 
 static Joint joints[NUM_LEGS][DOF_PER_LEG] = {
-    { Joint(AXIS_IDS[0][0]), Joint(AXIS_IDS[0][1]) }, // leg 0
+    Joint(AXIS_IDS[0][0]),
+    //{ Joint(AXIS_IDS[0][0]), Joint(AXIS_IDS[0][1]) }, // leg 0
 };
 
 static Kinematics leg_kin[NUM_LEGS] = {
@@ -31,9 +32,9 @@ void Body::begin() {
     }
 }
 
-void Body::update(float dt) {
+void Body::update() {
     for (uint8_t leg = 0; leg < NUM_LEGS; ++leg) {
-        legs_[leg].update(dt);
+        legs_[leg].update();
     }
 }
 
@@ -83,6 +84,7 @@ void Body::getLegFootPos(uint8_t leg_idx, float p[3]) const {
 
 void Body::onCan(const CAN_message_t& msg) {
     uint8_t node_id = odcan::node(static_cast<uint16_t>(msg.id));
+    // Serial.println(node_id);
 
     for (uint8_t leg = 0; leg < NUM_LEGS; ++leg) {
         for (uint8_t j = 0; j < DOF_PER_LEG; ++j) {

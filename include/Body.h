@@ -9,7 +9,7 @@ public:
     static Body& i();
 
     void begin();
-    void update(float dt);
+    void update();
 
     void setAllLegMode(LegMode m);
     void setLegMode(uint8_t leg_idx, LegMode m);

@@ -30,7 +30,7 @@ void Leg::setMode(LegMode m) {
             joints_[i].setAxisState(odrv::CLOSED_LOOP_CONTROL);
             break;
         case LegMode::POSITION:
-            joints_[i].setModes(odrv::POSITION_CONTROL, odrv::PASSTHROUGH);
+            joints_[i].setModes(odrv::POSITION_CONTROL, odrv::POS_FILTER);
             joints_[i].setAxisState(odrv::CLOSED_LOOP_CONTROL);
             break;
         }
@@ -49,7 +49,7 @@ void Leg::setTauRef(const float tau[DOF_PER_LEG]) {
     }    
 }
 
-void Leg::update(float /*dt*/) {
+void Leg::update() {
     // refresh encoder estimates
     for (uint8_t i = 0; i < DOF_PER_LEG; ++i) {
         joints_[i].update();

@@ -17,7 +17,7 @@ class Leg {
 
         // initialization
         void begin();
-        void update(float dt);
+        void update();
 
         // control mode
         void setMode(LegMode m);
