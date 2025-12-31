@@ -87,20 +87,20 @@ DogState Dog::getState() {
     };
 
     state.fr.shoulder = fill(MotorID::FR_SHOULDER);
-    state.fr.hip      = fill(MotorID::FR_HIP);
-    state.fr.knee     = fill(MotorID::FR_KNEE);
+    state.fr.hip = fill(MotorID::FR_HIP);
+    state.fr.knee = fill(MotorID::FR_KNEE);
 
     state.fl.shoulder = fill(MotorID::FL_SHOULDER);
-    state.fl.hip      = fill(MotorID::FL_HIP);
-    state.fl.knee     = fill(MotorID::FL_KNEE);
+    state.fl.hip = fill(MotorID::FL_HIP);
+    state.fl.knee = fill(MotorID::FL_KNEE);
 
     state.rr.shoulder = fill(MotorID::RR_SHOULDER);
-    state.rr.hip      = fill(MotorID::RR_HIP);
-    state.rr.knee     = fill(MotorID::RR_KNEE);
+    state.rr.hip = fill(MotorID::RR_HIP);
+    state.rr.knee = fill(MotorID::RR_KNEE);
 
     state.rl.shoulder = fill(MotorID::RL_SHOULDER);
-    state.rl.hip      = fill(MotorID::RL_HIP);
-    state.rl.knee     = fill(MotorID::RL_KNEE);
+    state.rl.hip = fill(MotorID::RL_HIP);
+    state.rl.knee = fill(MotorID::RL_KNEE);
 
     return state;
 }
