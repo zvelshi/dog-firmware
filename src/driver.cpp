@@ -144,7 +144,7 @@ bool Driver::probe(int id, uint32_t timeout_ms) {
         if (can_bus.read(msg)) {
             int reply_source_id = (msg.id >> 8) & 0xFF;
             
-            // Debug print to see what we actually hear (Optional)
+            // Debug print to see what we actually hear
             // Serial.print("Heard ID: "); Serial.println(reply_source_id);
 
             if (reply_source_id == id) {

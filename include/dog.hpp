@@ -14,5 +14,4 @@ private:
     Driver driver;
     bool _active_motors[13];
     void checkJoint(int id, const char* name);
-    float clamp(float val, float min, float max);
 };

@@ -1,4 +1,6 @@
 #include "dog.hpp"
+#include "kinematics.hpp"
+#include "config.hpp"
 #include <Arduino.h>
 
 Dog::Dog() {
@@ -80,27 +82,43 @@ DogState Dog::getState() {
     DogState state;
     
     // Fill the state struct
-    auto fill = [&](int id) {
+    auto fillJointState = [&](int id) {
         JointState js = driver.getJointState(id);
         js.connected = _active_motors[id];
         return js;
     };
 
-    state.fr.shoulder = fill(MotorID::FR_SHOULDER);
-    state.fr.hip = fill(MotorID::FR_HIP);
-    state.fr.knee = fill(MotorID::FR_KNEE);
+    auto fillFootState = [&](const LegState& leg_state) {
+        FootState fs;
+        float q[3] = {
+            leg_state.shoulder.position,
+            leg_state.hip.position,
+            leg_state.knee.position,
+        };
+        fs.position = Kinematics::forwardKinematics(q);
+        fs.in_contact = false;
+        return fs;
+    };
 
-    state.fl.shoulder = fill(MotorID::FL_SHOULDER);
-    state.fl.hip = fill(MotorID::FL_HIP);
-    state.fl.knee = fill(MotorID::FL_KNEE);
+    state.fr.shoulder = fillJointState(MotorID::FR_SHOULDER);
+    state.fr.hip = fillJointState(MotorID::FR_HIP);
+    state.fr.knee = fillJointState(MotorID::FR_KNEE);
+    state.fr.foot = fillFootState(state.fr);
 
-    state.rr.shoulder = fill(MotorID::RR_SHOULDER);
-    state.rr.hip = fill(MotorID::RR_HIP);
-    state.rr.knee = fill(MotorID::RR_KNEE);
+    state.fl.shoulder = fillJointState(MotorID::FL_SHOULDER);
+    state.fl.hip = fillJointState(MotorID::FL_HIP);
+    state.fl.knee = fillJointState(MotorID::FL_KNEE);
+    state.fl.foot = fillFootState(state.fl);
 
-    state.rl.shoulder = fill(MotorID::RL_SHOULDER);
-    state.rl.hip = fill(MotorID::RL_HIP);
-    state.rl.knee = fill(MotorID::RL_KNEE);
+    state.rr.shoulder = fillJointState(MotorID::RR_SHOULDER);
+    state.rr.hip = fillJointState(MotorID::RR_HIP);
+    state.rr.knee = fillJointState(MotorID::RR_KNEE);
+    state.rr.foot = fillFootState(state.rr);
+
+    state.rl.shoulder = fillJointState(MotorID::RL_SHOULDER);
+    state.rl.hip = fillJointState(MotorID::RL_HIP);
+    state.rl.knee = fillJointState(MotorID::RL_KNEE);
+    state.rl.foot = fillFootState(state.rl);
 
     return state;
 }

@@ -1,11 +1,24 @@
 #pragma once
 
+// --- GEOMETRY ---
+struct P3_XYZ {
+    float x;
+    float y;
+    float z;
+};
+
 // --- JOINT ---
 struct JointState {
     float position = 0.0f; // [rev]
     float velocity = 0.0f; // [rev/s]
     float torque = 0.0f; // [Nm]
     bool connected = false; // connection status [bool]
+};
+
+// --- FOOT STATE --
+struct FootState {
+    P3_XYZ position; // [mm]
+    bool in_contact = false; // contact status [bool]
 };
 
 struct JointCommand {
@@ -22,6 +35,7 @@ struct LegState {
     JointState shoulder;
     JointState hip;
     JointState knee;
+    FootState foot;
 };
 
 struct LegCommand {
