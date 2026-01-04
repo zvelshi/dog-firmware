@@ -1,6 +1,6 @@
 #pragma once
-#include "types.hpp"
 #include <array>
+#include "types.h"
 
 class Kinematics {
 public:

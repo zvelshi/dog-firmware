@@ -1,141 +1,42 @@
-#include "dog.hpp"
-#include "kinematics.hpp"
-#include "config.hpp"
-#include <Arduino.h>
+#include "Arduino.h"
+#include "dog.h"
 
-Dog::Dog() {
-    for(int i=0; i<13; i++) _active_motors[i] = false;
+Dog::Dog() : 
+    driver(),
+    leg_fl(MotorID::FL_SHOULDER, MotorID::FL_HIP, MotorID::FL_KNEE, &driver),
+    leg_fr(MotorID::FR_SHOULDER, MotorID::FR_HIP, MotorID::FR_KNEE, &driver),
+    leg_rl(MotorID::RL_SHOULDER, MotorID::RL_HIP, MotorID::RL_KNEE, &driver),
+    leg_rr(MotorID::RR_SHOULDER, MotorID::RR_HIP, MotorID::RR_KNEE, &driver)
+{
 }
 
 void Dog::begin() {
     driver.begin();
     delay(100);
     
-    Serial.println("--- DETECTING MOTORS ---");
+    Serial.println("--- INITIALIZING LEGS ---");
 
-    checkJoint(MotorID::FR_SHOULDER, "FR Shoulder");
-    checkJoint(MotorID::FL_SHOULDER, "FL Shoulder");
-    checkJoint(MotorID::RR_SHOULDER, "RR Shoulder");
-    checkJoint(MotorID::RL_SHOULDER, "RL Shoulder");
-
-    checkJoint(MotorID::FR_HIP, "FR Hip");
-    checkJoint(MotorID::FL_HIP, "FL Hip");
-    checkJoint(MotorID::RR_HIP, "RR Hip");
-    checkJoint(MotorID::RL_HIP, "RL Hip");
-
-    checkJoint(MotorID::FR_KNEE, "FR Knee");
-    checkJoint(MotorID::FL_KNEE, "FL Knee");
-    checkJoint(MotorID::RR_KNEE, "RR Knee");
-    checkJoint(MotorID::RL_KNEE, "RL Knee");
+    leg_fl.begin();
+    leg_fr.begin();
+    leg_rl.begin();
+    leg_rr.begin();
 }
 
-void Dog::setCommand(const DogCommand& cmd_in) {
-    DogCommand safe_cmd = cmd_in;
-
-    // Clamp positions to joint limits
-    auto clampJoint = [&](JointCommand& j, float min, float max) {
-        j.p_des = constrain(j.p_des, min, max);
-    };
-
-    clampJoint(safe_cmd.fr.shoulder, JointProperties::SHOULDER_MIN, JointProperties::SHOULDER_MAX);
-    clampJoint(safe_cmd.fl.shoulder, JointProperties::SHOULDER_MIN, JointProperties::SHOULDER_MAX);
-    clampJoint(safe_cmd.rr.shoulder, JointProperties::SHOULDER_MIN, JointProperties::SHOULDER_MAX);
-    clampJoint(safe_cmd.rl.shoulder, JointProperties::SHOULDER_MIN, JointProperties::SHOULDER_MAX);
-
-    clampJoint(safe_cmd.fr.hip, JointProperties::HIP_MIN, JointProperties::HIP_MAX);
-    clampJoint(safe_cmd.fl.hip, JointProperties::HIP_MIN, JointProperties::HIP_MAX);
-    clampJoint(safe_cmd.rr.hip, JointProperties::HIP_MIN, JointProperties::HIP_MAX);
-    clampJoint(safe_cmd.rl.hip, JointProperties::HIP_MIN, JointProperties::HIP_MAX);
-
-    clampJoint(safe_cmd.fr.knee, JointProperties::KNEE_MIN, JointProperties::KNEE_MAX);
-    clampJoint(safe_cmd.fl.knee, JointProperties::KNEE_MIN, JointProperties::KNEE_MAX);
-    clampJoint(safe_cmd.rr.knee, JointProperties::KNEE_MIN, JointProperties::KNEE_MAX);
-    clampJoint(safe_cmd.rl.knee, JointProperties::KNEE_MIN, JointProperties::KNEE_MAX);
-
-    // Send commands only to active motors
-    auto sendIfAlive = [&](int id, const JointCommand& j_cmd) {
-        if (_active_motors[id]) {
-            driver.sendJointCommand(id, j_cmd);
-        }
-    };
-
-    sendIfAlive(MotorID::FR_SHOULDER, safe_cmd.fr.shoulder);
-    sendIfAlive(MotorID::FR_HIP, safe_cmd.fr.hip);
-    sendIfAlive(MotorID::FR_KNEE, safe_cmd.fr.knee);
-
-    sendIfAlive(MotorID::FL_SHOULDER, safe_cmd.fl.shoulder);
-    sendIfAlive(MotorID::FL_HIP, safe_cmd.fl.hip);
-    sendIfAlive(MotorID::FL_KNEE, safe_cmd.fl.knee);
-
-    sendIfAlive(MotorID::RR_SHOULDER, safe_cmd.rr.shoulder);
-    sendIfAlive(MotorID::RR_HIP, safe_cmd.rr.hip);
-    sendIfAlive(MotorID::RR_KNEE, safe_cmd.rr.knee);
-
-    sendIfAlive(MotorID::RL_SHOULDER, safe_cmd.rl.shoulder);
-    sendIfAlive(MotorID::RL_HIP, safe_cmd.rl.hip);
-    sendIfAlive(MotorID::RL_KNEE, safe_cmd.rl.knee);
+void Dog::setCommand(DogCommand& cmd) {
+    leg_fl.command(cmd.legs[0]);
+    leg_fr.command(cmd.legs[1]);
+    leg_rl.command(cmd.legs[2]);
+    leg_rr.command(cmd.legs[3]);
 }
 
 DogState Dog::getState() {
-    while(driver.poll()); // Clear buffer
+    while(driver.poll()); 
 
     DogState state;
-    
-    // Fill the state struct
-    auto fillJointState = [&](int id) {
-        JointState js = driver.getJointState(id);
-        js.connected = _active_motors[id];
-        return js;
-    };
-
-    auto fillFootState = [&](const LegState& leg_state) {
-        FootState fs;
-        float q[3] = {
-            leg_state.shoulder.position,
-            leg_state.hip.position,
-            leg_state.knee.position,
-        };
-        fs.position = Kinematics::forwardKinematics(q);
-        fs.in_contact = false;
-        return fs;
-    };
-
-    state.fr.shoulder = fillJointState(MotorID::FR_SHOULDER);
-    state.fr.hip = fillJointState(MotorID::FR_HIP);
-    state.fr.knee = fillJointState(MotorID::FR_KNEE);
-    state.fr.foot = fillFootState(state.fr);
-
-    state.fl.shoulder = fillJointState(MotorID::FL_SHOULDER);
-    state.fl.hip = fillJointState(MotorID::FL_HIP);
-    state.fl.knee = fillJointState(MotorID::FL_KNEE);
-    state.fl.foot = fillFootState(state.fl);
-
-    state.rr.shoulder = fillJointState(MotorID::RR_SHOULDER);
-    state.rr.hip = fillJointState(MotorID::RR_HIP);
-    state.rr.knee = fillJointState(MotorID::RR_KNEE);
-    state.rr.foot = fillFootState(state.rr);
-
-    state.rl.shoulder = fillJointState(MotorID::RL_SHOULDER);
-    state.rl.hip = fillJointState(MotorID::RL_HIP);
-    state.rl.knee = fillJointState(MotorID::RL_KNEE);
-    state.rl.foot = fillFootState(state.rl);
+    state.legs[0] = leg_fl.getState();
+    state.legs[1] = leg_fr.getState();
+    state.legs[2] = leg_rl.getState();
+    state.legs[3] = leg_rr.getState();
 
     return state;
-}
-
-void Dog::checkJoint(int id, const char* name) {
-    bool alive = driver.probe(id);
-    _active_motors[id] = alive;
-    Serial.print("[ID "); 
-    Serial.print(id); 
-    Serial.print("] ");
-    Serial.print(name);
-    if (alive) {
-        Serial.println(": ONLINE");
-        Serial.print("    Sending STOP command to ID ");
-        Serial.println(id);
-        driver.sendStopCommand(id);
-    } else {
-        Serial.println(": MISSING");
-    }
 }

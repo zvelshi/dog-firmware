@@ -1,7 +1,7 @@
 #pragma once
-#include <FlexCAN_T4.h>
-#include "config.hpp"
-#include "types.hpp"
+#include "FlexCAN_T4.h"
+#include "config.h"
+#include "types.h"
 
 class Driver {
 public:

@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
-#include <math.h>
-#include "types.hpp"
+#include "types.h"
+#include "utils.h"
 
 // --- SYSTEM ---
 #define SERIAL_BAUD 115200
@@ -13,7 +13,7 @@
 #define CAN_BAUD_DATA 5000000
 #define CAN_SAMPLE_POINT 66.6
 
-// --- MOTOR ID MAPPING ---
+// --- MOTOR ID MAPPING --- (also q-mapping)
 namespace MotorID {
     // Front Left
     constexpr int FL_SHOULDER = 1;
@@ -46,10 +46,10 @@ namespace JointProperties {
     // Joint Limits [rad]
     constexpr float SHOULDER_MIN = -0.65f;
     constexpr float SHOULDER_MAX = 0.65f;
-    constexpr float HIP_MIN = -100.0f;
-    constexpr float HIP_MAX = 100.0f;
-    constexpr float KNEE_MIN = -100.0f;
-    constexpr float KNEE_MAX = 100.0f;
+    constexpr float HIP_MIN = -3.14/2;
+    constexpr float HIP_MAX = 3.14/2;
+    constexpr float KNEE_MIN = -3.14/2;
+    constexpr float KNEE_MAX = 3.14/2;
 }
 
 // --- GEOMETRY ---

@@ -1,9 +1,9 @@
-#include "kinematics.hpp"
-#include "types.hpp"
-#include "config.hpp"
 #include <cmath>
 #include <algorithm>
 #include <array>
+#include "kinematics.h"
+#include "types.h"
+#include "config.h"
 
 P3_XYZ Kinematics::forwardKinematics(float q[3]) {
     float x_plane = Geometry::L_HIP * sin(q[1]) + Geometry::L_KNEE * sin(q[1] + q[2]);

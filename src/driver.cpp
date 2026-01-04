@@ -1,27 +1,8 @@
-#include "driver.hpp"
+#include "driver.h"
+#include "utils.h"
 
 // Union helper for byte packing
 union FloatBytes { float f; uint8_t b[4]; };
-
-// Helper to get joint type
-int get_joint_type(int id) {
-    int type = id % 3;
-    return type;
-}
-
-// Helper to get the right ratio based on motor id
-float get_ratio(int id) {
-    int type = get_joint_type(id);
-    
-    if (type == 1) {
-        return JointProperties::RATIO_SHOULDER;
-    } else if (type == 2) {
-        return JointProperties::RATIO_HIP;
-    } else if (type == 0) {
-        return JointProperties::RATIO_KNEE;
-    } 
-    return 1.0f; 
-}
 
 Driver::Driver() {}
 
@@ -53,7 +34,7 @@ void Driver::sendJointCommand(int id, const JointCommand& cmd) {
     FloatBytes f_conv;
 
     // --- MATH CONVERSION ---
-    float ratio = get_ratio(id);
+    float ratio = Utils::getGearRatio(id);
     
     // Position: [rad] -> [rev]
     float motor_pos = (cmd.p_des / (2.0f * PI)) * ratio;
@@ -169,7 +150,7 @@ void Driver::parse_reply(const CANFD_message_t& msg) {
                 ptr += 2;
                 FloatBytes f;
                 
-                float ratio = get_ratio(id);
+                float ratio = Utils::getGearRatio(id);
 
                 // Position: [rev] -> [rad] / ratio
                 memcpy(f.b, &msg.buf[ptr], 4); 
