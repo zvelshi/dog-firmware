@@ -4,7 +4,7 @@
 #include "types.h"
 
 namespace Utils {
-    // Clamp helper (standard wrapper)
+    // Clamp helper
     float clamp(float val, float min, float max);
 
     // Motor ID helpers
@@ -13,7 +13,4 @@ namespace Utils {
     float getMaxTorque(int id);
     std::array<float, 2> getJointLimits(int id);
     float getLinkLength(int id);
-    
-    // Type punning helper for CAN serialization
-    union FloatBytes { float f; uint8_t b[4]; };
 }

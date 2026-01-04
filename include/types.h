@@ -1,16 +1,13 @@
 #pragma once
-#include <array>
-#include <cstdint>
+#include <Arduino.h>
+#include <ArduinoEigen.h>
 
-struct JointCommand; 
 struct JointState;
+struct JointCommand; 
 
-// --- GEOMETRY ---
-struct P3_XYZ {
-    float x;
-    float y;
-    float z;
-};
+// --- MATH TYPES ---
+using Vector3f = Eigen::Vector3f;
+using Matrix3f = Eigen::Matrix3f;
 
 // --- JOINT ---
 struct JointState {
@@ -29,9 +26,9 @@ struct JointCommand {
     float max_torque = 60.0f;  // [Nm]
 };
 
-// --- FOOT STATE ---
+// --- FOOT ---
 struct FootState {
-    P3_XYZ position; 
+    Vector3f position; 
     bool in_contact = false; 
 };
 

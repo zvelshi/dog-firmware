@@ -1,9 +1,10 @@
 #pragma once
-#include <array>
 #include "types.h"
 
 class Kinematics {
 public:
-    static P3_XYZ forwardKinematics(float q[3]);
-    static std::array<float, 3> inverseKinematics(P3_XYZ p);
+    static Vector3f forwardKinematics(const Vector3f& q);
+    static Vector3f inverseKinematics(const Vector3f& p);
+    static Matrix3f computeJacobian(const Vector3f& q);
+    static Vector3f cartesianToJointVelocity(const Vector3f& q, const Vector3f& v);
 };

@@ -13,11 +13,7 @@ Leg::Leg(int shoulder_id, int hip_id, int knee_id, Driver* driver_ptr)
 void Leg::begin() {
     for (int i = 0; i < 3; i++) {
         bool online = _driver->probe(_ids[i]);
-
-        Serial.print("  Joint ");
-        Serial.print(_ids[i]);
-        Serial.print(": ");
-
+        Serial.print("  Joint "); Serial.print(_ids[i]); Serial.print(": ");
         if (online) {
             _driver->sendStopCommand(_ids[i]);
             Serial.println("[ONLINE]");
@@ -30,23 +26,26 @@ void Leg::begin() {
 void Leg::command(const LegCommand& cmd) {
     for (int i = 0; i < 3; i++) {
         JointCommand j_cmd = cmd.joints[i];
+        
+        // Safety Clamp
         std::array<float, 2> j_limits = Utils::getJointLimits(_ids[i]);
         j_cmd.p_des = Utils::clamp(j_cmd.p_des, j_limits[0], j_limits[1]);
+        
         _driver->sendJointCommand(_ids[i], j_cmd);
     }
 }
 
 LegState Leg::getState() {
     LegState state;
-    
-    float q[3];
+    Vector3f q;
+
     for (int i = 0; i < 3; i++) {
         state.joints[i] = _driver->getJointState(_ids[i]);
-        q[i] = state.joints[i].position;
+        q(i) = state.joints[i].position;
     }
 
     state.foot.position = Kinematics::forwardKinematics(q);
-    state.foot.in_contact = false; // TODO: Add contact estimation logic
+    state.foot.in_contact = false; // Placeholder
 
     return state;
 }
