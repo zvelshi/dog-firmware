@@ -3,12 +3,6 @@
 #include "config.h"
 #include "kinematics.h"
 
-const Leg::Limits Leg::JOINT_LIMITS[3] = {
-    {JointProperties::SHOULDER_MIN, JointProperties::SHOULDER_MAX},
-    {JointProperties::HIP_MIN,      JointProperties::HIP_MAX},
-    {JointProperties::KNEE_MIN,     JointProperties::KNEE_MAX}
-};
-
 Leg::Leg(int shoulder_id, int hip_id, int knee_id, Driver* driver_ptr) 
     : _driver(driver_ptr) {
     _ids[0] = shoulder_id;
@@ -19,8 +13,16 @@ Leg::Leg(int shoulder_id, int hip_id, int knee_id, Driver* driver_ptr)
 void Leg::begin() {
     for (int i = 0; i < 3; i++) {
         bool online = _driver->probe(_ids[i]);
+
+        Serial.print("  Joint ");
+        Serial.print(_ids[i]);
+        Serial.print(": ");
+
         if (online) {
             _driver->sendStopCommand(_ids[i]);
+            Serial.println("[ONLINE]");
+        } else {
+            Serial.println("[OFFLINE]");
         }
     }
 }
@@ -28,7 +30,8 @@ void Leg::begin() {
 void Leg::command(const LegCommand& cmd) {
     for (int i = 0; i < 3; i++) {
         JointCommand j_cmd = cmd.joints[i];
-        j_cmd.p_des = Utils::clamp(j_cmd.p_des, JOINT_LIMITS[i].min, JOINT_LIMITS[i].max);
+        std::array<float, 2> j_limits = Utils::getJointLimits(_ids[i]);
+        j_cmd.p_des = Utils::clamp(j_cmd.p_des, j_limits[0], j_limits[1]);
         _driver->sendJointCommand(_ids[i], j_cmd);
     }
 }

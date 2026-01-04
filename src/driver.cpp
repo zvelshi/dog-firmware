@@ -7,7 +7,6 @@ union FloatBytes { float f; uint8_t b[4]; };
 Driver::Driver() {}
 
 void Driver::begin() {
-    Serial.println("--- INITIALIZING DRIVER CAN BUS ---");
     can_bus.begin();
     CANFD_timings_t config;
     config.clock = CAN_CLOCK;
@@ -25,11 +24,11 @@ void Driver::sendJointCommand(int id, const JointCommand& cmd) {
     
     msg.id = 0x8000 | id; 
     msg.flags.extended = 1; 
-    msg.len = 64; 
+    msg.len = 32; 
     msg.brs = 1; 
     msg.edl = 1;
     
-    memset(msg.buf, 0, 64);
+    memset(msg.buf, 0, 32);
     int ptr = 0;
     FloatBytes f_conv;
 

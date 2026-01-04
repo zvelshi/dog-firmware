@@ -15,7 +15,4 @@ public:
 private:
     std::array<int, 3> _ids; // 0:Shoulder, 1:Hip, 2:Knee
     Driver* _driver;
-    
-    struct Limits { float min; float max; };
-    static const Limits JOINT_LIMITS[3];
 };

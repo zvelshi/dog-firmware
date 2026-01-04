@@ -5,7 +5,7 @@
 
 // --- SYSTEM ---
 #define SERIAL_BAUD 115200
-#define CONTROL_LOOP_HZ 1000
+#define CONTROL_LOOP_HZ 500
 
 // --- CAN BUS ---
 #define CAN_CLOCK CLK_60MHz
@@ -42,6 +42,11 @@ namespace JointProperties {
     constexpr float RATIO_SHOULDER = 17.0f;
     constexpr float RATIO_HIP = (56.0f / 18.0f) * (56.0f / 14.0f);
     constexpr float RATIO_KNEE = (56.0f / 18.0f) * (56.0f / 14.0f);
+
+    // Torque Limits [Nm]
+    constexpr float MAX_TORQUE_SHOULDER = 85.0f;
+    constexpr float MAX_TORQUE_HIP = 60.0f;
+    constexpr float MAX_TORQUE_KNEE = 60.0f;
 
     // Joint Limits [rad]
     constexpr float SHOULDER_MIN = -0.65f;

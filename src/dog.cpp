@@ -11,11 +11,15 @@ Dog::Dog() :
 }
 
 void Dog::begin() {
-    driver.begin();
-    delay(100);
-    
-    Serial.println("--- INITIALIZING LEGS ---");
+    Serial.begin(115200);
+    while(!Serial);
+    delay(500);
 
+    Serial.println("--- INITIALIZING DRIVER CAN BUS ---");
+    driver.begin();
+    delay(500);
+
+    Serial.println("--- INITIALIZING LEGS ---");
     leg_fl.begin();
     leg_fr.begin();
     leg_rl.begin();

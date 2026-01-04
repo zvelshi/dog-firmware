@@ -39,18 +39,10 @@ struct FootState {
 struct LegState {
     std::array<JointState, 3> joints;
     FootState foot;
-
-    JointState& shoulder() { return joints[0]; }
-    JointState& hip()      { return joints[1]; }
-    JointState& knee()     { return joints[2]; }
 };
 
 struct LegCommand {
     std::array<JointCommand, 3> joints;
-
-    JointCommand& shoulder() { return joints[0]; }
-    JointCommand& hip()      { return joints[1]; }
-    JointCommand& knee()     { return joints[2]; }
 };
 
 // --- DOG ---

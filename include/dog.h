@@ -15,7 +15,6 @@ private:
     Driver driver;
     
     // Leg Instances
-    
     Leg leg_fl;
     Leg leg_fr;
     Leg leg_rl;
